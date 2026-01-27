@@ -1,0 +1,5 @@
+# requirements.txt
+reportlab
+pandas
+xlsxwriter
+Django==6.0.1

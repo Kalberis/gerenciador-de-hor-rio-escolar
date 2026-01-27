@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="text-center mt-5">
+  <h1 class="mb-4">Bem-vindo ao Gerenciador de Horário Escolar</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="list-group">
+        <a href="{% url 'lista_turmas' %}" class="list-group-item list-group-item-action">Turmas</a>
+        <a href="{% url 'lista_professores' %}" class="list-group-item list-group-item-action">Professores</a>
+        <a href="{% url 'lista_disciplinas' %}" class="list-group-item list-group-item-action">Disciplinas</a>
+        <a href="{% url 'lista_horarios' %}" class="list-group-item list-group-item-action">Horários</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

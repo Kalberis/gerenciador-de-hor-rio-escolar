@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-pencil-square"></i> Editar Horário</h1>
+{% if form.errors %}
+  <div class="alert alert-danger shadow-sm mb-4">
+    <strong><i class="bi bi-exclamation-triangle"></i> Atenção:</strong>
+    <ul class="mb-0">
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<form method="post" class="card p-4 mb-3 shadow-sm" style="max-width: 500px; margin:auto;">
+  {% csrf_token %}
+  <div class="row g-3">
+    {% for field in form.visible_fields %}
+      <div class="col-12">
+        <label class="form-label fw-semibold">{{ field.label }}</label>
+        {% if field.name == 'horario_inicio' or field.name == 'horario_fim' %}
+          <input type="time" name="{{ field.name }}" value="{{ field.value|default_if_none:'' }}" class="form-control{% if field.errors %} is-invalid{% endif %}" required min="07:00" max="22:00">
+          {% if field.errors %}
+            <div class="invalid-feedback">
+              {% for error in field.errors %}{{ error }}{% endfor %}
+            </div>
+          {% else %}
+            <small class="form-text text-muted">Horário permitido: 07:00 até 22:00</small>
+          {% endif %}
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="d-flex justify-content-between mt-4">
+    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Salvar</button>
+    <a href="{% url 'lista_horarios' %}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+  </div>
+</form>
+{% endblock %}

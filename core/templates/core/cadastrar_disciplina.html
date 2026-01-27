@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1 class="mb-4">Cadastrar Disciplina</h1>
+<form method="post" class="card p-4 mb-3 shadow-sm">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Salvar</button>
+</form>
+<a href="{% url 'lista_disciplinas' %}" class="btn btn-secondary">Voltar para lista de disciplinas</a>
+{% endblock %}
