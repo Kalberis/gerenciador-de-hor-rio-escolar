@@ -2,9 +2,7 @@
 {% block content %}
 <h1 class="mb-4"><i class="bi bi-calendar-week"></i> Horários</h1>
 <a href="{% url 'cadastrar_horario' %}" class="btn btn-success mb-3"><i class="bi bi-plus-circle"></i> Cadastrar Horário</a>
-<a href="{% url 'exportar_horarios_excel' %}" class="btn btn-outline-primary mb-3 ms-2"><i class="bi bi-file-earmark-excel"></i> Excel</a>
 <a href="{% url 'exportar_horarios_pdf' %}" class="btn btn-outline-danger mb-3 ms-2"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
-<a href="{% url 'exportar_horarios_ics' %}" class="btn btn-outline-success mb-3 ms-2"><i class="bi bi-calendar-plus"></i> Google Calendar</a>
 
 <form method="get" class="row g-2 mb-4">
   <div class="col-12 col-md-3">
@@ -20,14 +18,6 @@
       <option value="">Todos os professores</option>
       {% for professor in professores %}
         <option value="{{ professor.id }}" {% if professor.id|stringformat:'s' == selected_professor %}selected{% endif %}>{{ professor }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-12 col-md-3">
-    <select name="disciplina" class="form-select" onchange="this.form.submit()">
-      <option value="">Todas as disciplinas</option>
-      {% for disciplina in disciplinas %}
-        <option value="{{ disciplina.id }}" {% if disciplina.id|stringformat:'s' == selected_disciplina %}selected{% endif %}>{{ disciplina }}</option>
       {% endfor %}
     </select>
   </div>

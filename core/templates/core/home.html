@@ -5,7 +5,7 @@
   
   <!-- Cards de Estatísticas -->
   <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div class="card text-white bg-primary mb-3">
         <div class="card-body">
           <h5 class="card-title"><i class="bi bi-people-fill"></i> Turmas</h5>
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div class="card text-white bg-success mb-3">
         <div class="card-body">
           <h5 class="card-title"><i class="bi bi-person-badge"></i> Professores</h5>
@@ -21,15 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-info mb-3">
-        <div class="card-body">
-          <h5 class="card-title"><i class="bi bi-book"></i> Disciplinas</h5>
-          <h2 class="card-text">{{ total_disciplinas }}</h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div class="card text-white bg-warning mb-3">
         <div class="card-body">
           <h5 class="card-title"><i class="bi bi-calendar-week"></i> Horários</h5>
@@ -81,9 +73,6 @@
             <a href="{% url 'cadastrar_professor' %}" class="btn btn-success">
               <i class="bi bi-person-plus"></i> Novo Professor
             </a>
-            <a href="{% url 'cadastrar_disciplina' %}" class="btn btn-info">
-              <i class="bi bi-bookmark-plus"></i> Nova Disciplina
-            </a>
             <a href="{% url 'cadastrar_horario' %}" class="btn btn-warning">
               <i class="bi bi-calendar-plus"></i> Novo Horário
             </a>
@@ -102,22 +91,17 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-md-3 text-center mb-3">
+            <div class="col-md-4 text-center mb-3">
               <a href="{% url 'lista_turmas' %}" class="btn btn-outline-primary btn-lg w-100">
                 <i class="bi bi-people-fill"></i><br>Turmas
               </a>
             </div>
-            <div class="col-md-3 text-center mb-3">
+            <div class="col-md-4 text-center mb-3">
               <a href="{% url 'lista_professores' %}" class="btn btn-outline-success btn-lg w-100">
                 <i class="bi bi-person-badge"></i><br>Professores
               </a>
             </div>
-            <div class="col-md-3 text-center mb-3">
-              <a href="{% url 'lista_disciplinas' %}" class="btn btn-outline-info btn-lg w-100">
-                <i class="bi bi-book"></i><br>Disciplinas
-              </a>
-            </div>
-            <div class="col-md-3 text-center mb-3">
+            <div class="col-md-4 text-center mb-3">
               <a href="{% url 'lista_horarios' %}" class="btn btn-outline-warning btn-lg w-100">
                 <i class="bi bi-calendar-week"></i><br>Horários
               </a>
