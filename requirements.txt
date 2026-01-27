@@ -1,5 +1,35 @@
-# requirements.txt
-reportlab
-pandas
-xlsxwriter
+# Core Django
 Django==6.0.1
+
+# Database
+psycopg2-binary==2.9.7
+
+# PDF Generation
+reportlab==4.0.7
+
+# Data Processing
+pandas==2.1.4
+
+# Excel Export
+xlsxwriter==3.1.9
+
+# Production Server
+gunicorn==21.2.0
+
+# Cache
+redis==5.0.1
+
+# Environment Variables
+python-decouple==3.8
+
+# Security
+django-csp==3.8
+django-secure==1.0.2
+
+# Monitoring (opcional)
+sentry-sdk==1.38.0
+
+# Development
+# pytest==7.4.3
+# pytest-django==4.7.0
+# coverage==7.3.2

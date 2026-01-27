@@ -1,0 +1,100 @@
+# Arquivos de ambiente
+.env
+.env.local
+.env.production
+.env.staging
+
+# Arquivos de desenvolvimento
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+django.log
+gunicorn.log
+nginx-error.log
+nginx-access.log
+
+# Arquivos estáticos coletados
+staticfiles/
+static/
+
+# Arquivos de mídia
+media/
+
+# Banco de dados
+*.sqlite3
+*.db
+
+# Certificados SSL
+*.pem
+*.key
+*.crt
+
+# Backups
+backups/
+*.backup
+*.sql
+
+# Documentação temporária
+*.tmp
+*.bak
+
+# Arquivos de teste
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Arquivos do Docker
+.dockerignore
+
+# Arquivos do sistema operacional
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Arquivos de configuração local
+local_settings.py
+settings_local.py

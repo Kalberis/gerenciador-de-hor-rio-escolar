@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Excluir Disponibilidade{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-trash-alt"></i> Excluir Disponibilidade
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Atenção!</h5>
+                        <p>Você está prestes a excluir a seguinte disponibilidade:</p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ disponibilidade.professor.nome }}</h5>
+                            <p class="card-text">
+                                <strong>Dia da Semana:</strong> {{ disponibilidade.get_dia_semana_display }}<br>
+                                <strong>Horário:</strong> {{ disponibilidade.horario_inicio|time:"H:i" }} às {{ disponibilidade.horario_fim|time:"H:i" }}<br>
+                                {% if disponibilidade.periodo %}
+                                    <strong>Período:</strong> {{ disponibilidade.periodo.nome }}<br>
+                                {% endif %}
+                                {% if disponibilidade.unidade %}
+                                    <strong>Unidade:</strong> {{ disponibilidade.unidade.nome }}<br>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-danger">
+                        <strong>Esta ação não pode ser desfeita!</strong> A disponibilidade será removida permanentemente do sistema.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'lista_disponibilidades' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Confirmar Exclusão
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

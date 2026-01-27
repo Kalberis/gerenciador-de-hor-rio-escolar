@@ -1,0 +1,108 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cadastrar Atividade Extra{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-tasks"></i> Cadastrar Atividade Extra
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                                Título da Atividade
+                            </label>
+                            {{ form.titulo }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                                        Tipo de Atividade
+                                    </label>
+                                    {{ form.tipo }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.data.id_for_label }}" class="form-label">
+                                        Data
+                                    </label>
+                                    {{ form.data }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.horario_inicio.id_for_label }}" class="form-label">
+                                        Horário Início
+                                    </label>
+                                    {{ form.horario_inicio }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.horario_fim.id_for_label }}" class="form-label">
+                                        Horário Fim
+                                    </label>
+                                    {{ form.horario_fim }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.sala.id_for_label }}" class="form-label">
+                                        Sala (Opcional)
+                                    </label>
+                                    {{ form.sala }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.professores.id_for_label }}" class="form-label">
+                                Professores Participantes
+                            </label>
+                            {{ form.professores }}
+                            <div class="form-text">Selecione os professores que participarão desta atividade.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.descricao.id_for_label }}" class="form-label">
+                                Descrição (Opcional)
+                            </label>
+                            {{ form.descricao }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.unidade.id_for_label }}" class="form-label">
+                                Unidade (Opcional)
+                            </label>
+                            {{ form.unidade }}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'lista_atividades_extras' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Atividade
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

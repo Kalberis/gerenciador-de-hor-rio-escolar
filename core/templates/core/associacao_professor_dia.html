@@ -1,0 +1,210 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Associação Professor x Dia da Semana{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="fas fa-calendar-alt"></i> Associação Professor x Dia da Semana
+        </h1>
+        <div>
+            <a href="{% url 'lista_disponibilidades' %}" class="btn btn-outline-primary me-2">
+                <i class="fas fa-clock"></i> Gerenciar Disponibilidades
+            </a>
+            <a href="{% url 'lista_horarios' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-calendar-week"></i> Ver Horários
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-table"></i> Matriz de Associação
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if professores %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 200px; position: sticky; left: 0; background: #212529; z-index: 2;">
+                                    Professor
+                                </th>
+                                {% for dia in dias_semana %}
+                                    <th class="text-center" style="min-width: 150px;">
+                                        {{ dia }}
+                                    </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for professor in professores %}
+                                <tr>
+                                    <td style="position: sticky; left: 0; background: white; font-weight: bold; z-index: 1;">
+                                        <i class="fas fa-user-tie text-primary me-2"></i>
+                                        {{ professor.nome }}
+                                    </td>
+                                    {% for dia in dias_semana %}
+                                        <td class="text-center">
+                                            {% with associacao_data=associacao|key:professor|key:dia %}
+                                                <div class="d-flex flex-column gap-1">
+                                                    <!-- Disponibilidade -->
+                                                    {% if associacao_data.tem_disponibilidade %}
+                                                        <div class="badge bg-success">
+                                                            <i class="fas fa-check-circle"></i> Disponível
+                                                        </div>
+                                                        {% for disp in associacao_data.disponibilidades %}
+                                                            <small class="text-muted">
+                                                                {{ disp.horario_inicio|time:"H:i" }} - {{ disp.horario_fim|time:"H:i" }}
+                                                            </small>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <div class="badge bg-light text-muted">
+                                                            <i class="fas fa-times-circle"></i> Não disponível
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <!-- Alocações -->
+                                                    {% if associacao_data.tem_alocacao %}
+                                                        <hr class="my-1">
+                                                        <div class="badge bg-primary">
+                                                            <i class="fas fa-calendar-check"></i> Alocado
+                                                        </div>
+                                                        {% for aloc in associacao_data.alocacoes %}
+                                                            <small class="text-primary fw-bold">
+                                                                {{ aloc.turma.nome }}
+                                                            </small>
+                                                            <small class="text-muted d-block">
+                                                                {{ aloc.horario_inicio|time:"H:i" }} - {{ aloc.horario_fim|time:"H:i" }}
+                                                                {% if aloc.sala %}• Sala {{ aloc.sala }}{% endif %}
+                                                            </small>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                            {% endwith %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Legenda -->
+                <div class="mt-4">
+                    <h6><i class="fas fa-info-circle"></i> Legenda:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-success me-2">
+                                    <i class="fas fa-check-circle"></i> Disponível
+                                </span>
+                                <small>Professor tem disponibilidade cadastrada para este dia</small>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-light text-muted me-2">
+                                    <i class="fas fa-times-circle"></i> Não disponível
+                                </span>
+                                <small>Professor não tem disponibilidade cadastrada</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary me-2">
+                                    <i class="fas fa-calendar-check"></i> Alocado
+                                </span>
+                                <small>Professor está alocado em aula neste dia</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas -->
+                <div class="mt-4">
+                    <h6><i class="fas fa-chart-bar"></i> Estatísticas:</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h4 class="text-primary">{{ professores|length }}</h4>
+                                    <small>Total de Professores</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h4 class="text-success">
+                                        {% widthratio associacao|length 5 1 %}
+                                    </h4>
+                                    <small>Média de Disponibilidades por Professor</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h4 class="text-info">
+                                        {% for professor in professores %}
+                                            {% for dia in dias_semana %}
+                                                {% if associacao|key:professor|key:dia.tem_alocacao %}
+                                                    {{ forloop.counter }}{% endif %}
+                                                {% empty %}0
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </h4>
+                                    <small>Total de Alocações</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h4 class="text-warning">
+                                        {% for professor in professores %}
+                                            {% for dia in dias_semana %}
+                                                {% if associacao|key:professor|key:dia.tem_disponibilidade and not associacao|key:professor|key:dia.tem_alocacao %}
+                                                    {{ forloop.counter }}{% endif %}
+                                                {% empty %}0
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </h4>
+                                    <small>Disponibilidades Não Utilizadas</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Nenhum professor cadastrado no sistema.
+                    <a href="{% url 'cadastrar_professor' %}" class="alert-link">Cadastrar primeiro professor</a>.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.card-body small {
+    font-size: 0.8em;
+}
+</style>
+{% endblock %}

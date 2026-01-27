@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Excluir Restrição de Horário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-trash-alt"></i> Excluir Restrição de Horário
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Atenção!</h5>
+                        <p>Você está prestes a excluir a seguinte restrição de horário:</p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ restricao.professor.nome }}</h5>
+                            <p class="card-text">
+                                <strong>Dia da Semana:</strong> {{ restricao.get_dia_semana_display }}<br>
+                                <strong>Horário:</strong> {{ restricao.horario_inicio|time:"H:i" }} às {{ restricao.horario_fim|time:"H:i" }}<br>
+                                {% if restricao.periodo %}
+                                    <strong>Período:</strong> {{ restricao.periodo.nome }}<br>
+                                {% endif %}
+                                {% if restricao.unidade %}
+                                    <strong>Unidade:</strong> {{ restricao.unidade.nome }}<br>
+                                {% endif %}
+                                <strong>Motivo:</strong> {{ restricao.motivo }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-danger">
+                        <strong>Esta ação não pode ser desfeita!</strong> A restrição será removida permanentemente do sistema.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'lista_restricoes' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Confirmar Exclusão
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,18 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Turma, Professor, Horario
+
+# Configurações de teste que não dependem do Redis
+TEST_CACHE_SETTINGS = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+TEST_SESSION_SETTINGS = {
+    'SESSION_ENGINE': 'django.contrib.sessions.backends.db',
+}
 
 class ModelTests(TestCase):
     def test_turma_str(self):
@@ -26,6 +37,7 @@ class ModelTests(TestCase):
         expected = "Turma A - João Silva (Segunda 08:00-09:00)"
         self.assertEqual(str(horario), expected)
 
+@override_settings(CACHES=TEST_CACHE_SETTINGS, **TEST_SESSION_SETTINGS)
 class ViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')

@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Disponibilidades dos Professores{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="fas fa-calendar-check"></i> Disponibilidades dos Professores
+        </h1>
+        <a href="{% url 'cadastrar_disponibilidade' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Cadastrar Disponibilidade
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if disponibilidades %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Professor</th>
+                                <th>Dia da Semana</th>
+                                <th>Horário Início</th>
+                                <th>Horário Fim</th>
+                                <th>Unidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for disp in disponibilidades %}
+                                <tr>
+                                    <td>{{ disp.professor.nome }}</td>
+                                    <td>{{ disp.get_dia_semana_display }}</td>
+                                    <td>{{ disp.horario_inicio|time:"H:i" }}</td>
+                                    <td>{{ disp.horario_fim|time:"H:i" }}</td>
+                                    <td>{{ disp.unidade.nome|default:"Todas" }}</td>
+                                    <td>
+                                        <a href="{% url 'editar_disponibilidade' disp.pk %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a href="{% url 'excluir_disponibilidade' disp.pk %}" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Nenhuma disponibilidade cadastrada.
+                    <a href="{% url 'cadastrar_disponibilidade' %}" class="alert-link">Cadastrar primeira disponibilidade</a>.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Configurações de Professores{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">
+                    <i class="fas fa-cogs"></i> Configurações de Professores
+                </h1>
+                <a href="{% url 'lista_professores' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Configurações Atuais</h5>
+                </div>
+                <div class="card-body">
+                    {% if configuracoes %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Professor</th>
+                                        <th>Aulas/Dia (Máx)</th>
+                                        <th>Aulas/Semana (Máx)</th>
+                                        <th>Dias Trabalho (Máx)</th>
+                                        <th>Prioridade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for config in configuracoes %}
+                                        <tr>
+                                            <td>{{ config.professor.nome }}</td>
+                                            <td>{{ config.aulas_diarias_max }}</td>
+                                            <td>{{ config.aulas_semanais_max }}</td>
+                                            <td>{{ config.dias_trabalho_max }}</td>
+                                            <td>
+                                                {% if config.prioridade_minimizacao == 'dias_trabalho' %}
+                                                    Minimizar Dias
+                                                {% elif config.prioridade_minimizacao == 'vagas' %}
+                                                    Minimizar Vagas
+                                                {% else %}
+                                                    Equilibrado
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'editar_configuracao_professor' config.pk %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Nenhuma configuração de professor encontrada.
+                            As configurações padrão serão usadas durante a otimização.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

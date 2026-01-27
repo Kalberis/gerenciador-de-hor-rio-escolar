@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Restrições de Horário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="fas fa-ban"></i> Restrições de Horário
+        </h1>
+        <a href="{% url 'cadastrar_restricao' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Cadastrar Restrição
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if restricoes %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Professor</th>
+                                <th>Dia da Semana</th>
+                                <th>Horário</th>
+                                <th>Motivo</th>
+                                <th>Unidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for restricao in restricoes %}
+                                <tr>
+                                    <td>{{ restricao.professor.nome }}</td>
+                                    <td>{{ restricao.get_dia_semana_display }}</td>
+                                    <td>{{ restricao.horario_inicio|time:"H:i" }} - {{ restricao.horario_fim|time:"H:i" }}</td>
+                                    <td>
+                                        <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ restricao.motivo }}">
+                                            {{ restricao.motivo }}
+                                        </span>
+                                    </td>
+                                    <td>{{ restricao.unidade.nome|default:"Todas" }}</td>
+                                    <td>
+                                        <a href="{% url 'editar_restricao' restricao.pk %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a href="{% url 'excluir_restricao' restricao.pk %}" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Excluir
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Nenhuma restrição de horário cadastrada.
+                    <a href="{% url 'cadastrar_restricao' %}" class="alert-link">Cadastrar primeira restrição</a>.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
