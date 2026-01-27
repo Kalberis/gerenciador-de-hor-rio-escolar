@@ -58,7 +58,7 @@
       {% for hora in horarios_unicos %}
         <tr>
           <th style="position:sticky;left:0;background:#f8f9fa;z-index:1;">{{ hora }}</th>
-          {% for dia in "Segunda,Terça,Quarta,Quinta,Sexta".split(',') %}
+          {% for dia in dias_semana %}
             <td style="min-width:120px;">
               {% for h in horarios %}
                 {% if h.dia_semana == dia and h.horario_inicio|stringformat:'H:i' == hora %}

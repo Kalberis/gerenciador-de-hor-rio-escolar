@@ -6,7 +6,6 @@
   <thead>
     <tr>
       <th>Nome</th>
-      <th>Ano</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -14,14 +13,13 @@
     {% for turma in turmas %}
       <tr>
         <td>{{ turma.nome }}</td>
-        <td>{{ turma.ano }}</td>
         <td>
           <a href="{% url 'editar_turma' turma.pk %}" class="btn btn-primary btn-sm">Editar</a>
           <a href="{% url 'excluir_turma' turma.pk %}" class="btn btn-danger btn-sm">Excluir</a>
         </td>
       </tr>
     {% empty %}
-      <tr><td colspan="3">Nenhuma turma cadastrada.</td></tr>
+      <tr><td colspan="2">Nenhuma turma cadastrada.</td></tr>
     {% endfor %}
   </tbody>
 </table>

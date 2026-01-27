@@ -327,9 +327,11 @@ def lista_horarios(request):
 
 	# Obter todos os horários únicos cadastrados (hora de início)
 	horarios_unicos = sorted(set(h.horario_inicio.strftime('%H:%M') for h in horarios))
+	dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
 	return render(request, 'core/lista_horarios.html', {
 		'horarios': horarios,
 		'horarios_unicos': horarios_unicos,
+		'dias_semana': dias_semana,
 		'turmas': turmas,
 		'professores': professores,
 		'disciplinas': disciplinas,
