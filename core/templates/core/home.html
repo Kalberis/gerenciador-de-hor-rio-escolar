@@ -1,14 +1,129 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<div class="text-center mt-5">
-  <h1 class="mb-4">Bem-vindo ao Gerenciador de Horário Escolar</h1>
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="list-group">
-        <a href="{% url 'lista_turmas' %}" class="list-group-item list-group-item-action">Turmas</a>
-        <a href="{% url 'lista_professores' %}" class="list-group-item list-group-item-action">Professores</a>
-        <a href="{% url 'lista_disciplinas' %}" class="list-group-item list-group-item-action">Disciplinas</a>
-        <a href="{% url 'lista_horarios' %}" class="list-group-item list-group-item-action">Horários</a>
+<div class="container mt-4">
+  <h1 class="mb-4 text-center">Dashboard - Gerenciador de Horário Escolar</h1>
+  
+  <!-- Cards de Estatísticas -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-people-fill"></i> Turmas</h5>
+          <h2 class="card-text">{{ total_turmas }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-person-badge"></i> Professores</h5>
+          <h2 class="card-text">{{ total_professores }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-book"></i> Disciplinas</h5>
+          <h2 class="card-text">{{ total_disciplinas }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-calendar-week"></i> Horários</h5>
+          <h2 class="card-text">{{ total_horarios }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico de Horários por Dia -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="bi bi-bar-chart"></i> Horários por Dia da Semana</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            {% for dia, quantidade in horarios_por_dia.items %}
+            <div class="col-12 mb-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>{{ dia }}</span>
+                <div class="progress flex-grow-1 mx-3" style="height: 20px;">
+                  <div class="progress-bar" role="progressbar" 
+                       style="width: {% widthratio quantidade 1 total_horarios %}%" 
+                       aria-valuenow="{{ quantidade }}" aria-valuemin="0" aria-valuemax="{{ total_horarios }}">
+                    {{ quantidade }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Ações Rápidas -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="bi bi-lightning"></i> Ações Rápidas</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <a href="{% url 'cadastrar_turma' %}" class="btn btn-primary">
+              <i class="bi bi-plus-circle"></i> Nova Turma
+            </a>
+            <a href="{% url 'cadastrar_professor' %}" class="btn btn-success">
+              <i class="bi bi-person-plus"></i> Novo Professor
+            </a>
+            <a href="{% url 'cadastrar_disciplina' %}" class="btn btn-info">
+              <i class="bi bi-bookmark-plus"></i> Nova Disciplina
+            </a>
+            <a href="{% url 'cadastrar_horario' %}" class="btn btn-warning">
+              <i class="bi bi-calendar-plus"></i> Novo Horário
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Links de Navegação -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="bi bi-list"></i> Gerenciar</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 text-center mb-3">
+              <a href="{% url 'lista_turmas' %}" class="btn btn-outline-primary btn-lg w-100">
+                <i class="bi bi-people-fill"></i><br>Turmas
+              </a>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+              <a href="{% url 'lista_professores' %}" class="btn btn-outline-success btn-lg w-100">
+                <i class="bi bi-person-badge"></i><br>Professores
+              </a>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+              <a href="{% url 'lista_disciplinas' %}" class="btn btn-outline-info btn-lg w-100">
+                <i class="bi bi-book"></i><br>Disciplinas
+              </a>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+              <a href="{% url 'lista_horarios' %}" class="btn btn-outline-warning btn-lg w-100">
+                <i class="bi bi-calendar-week"></i><br>Horários
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

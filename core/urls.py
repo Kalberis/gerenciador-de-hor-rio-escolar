@@ -1,10 +1,14 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('horarios/exportar/', views.exportar_horarios_excel, name='exportar_horarios_excel'),
     path('horarios/exportar_pdf/', views.exportar_horarios_pdf, name='exportar_horarios_pdf'),
     path('horarios/exportar_ics/', views.exportar_horarios_ics, name='exportar_horarios_ics'),
+    path('horarios/exportar_modelo_pdf/', views.exportar_tabela_modelo_pdf, name='exportar_tabela_modelo_pdf'),
     path('', views.home, name='home'),
     path('turmas/', views.lista_turmas, name='lista_turmas'),
     path('turmas/cadastrar/', views.cadastrar_turma, name='cadastrar_turma'),

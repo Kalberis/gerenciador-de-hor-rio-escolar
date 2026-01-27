@@ -1,3 +1,67 @@
+# --- PDF modelo tabela escolar ---
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from django.http import HttpResponse
+from django.contrib import messages
+import io
+
+def exportar_tabela_modelo_pdf(request):
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="horario_manha_fundamental.pdf"'
+	buffer = io.BytesIO()
+	doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), rightMargin=20, leftMargin=20, topMargin=30, bottomMargin=20)
+	elements = []
+	styles = getSampleStyleSheet()
+	title = Paragraph("<b>HORÁRIO MANHÃ FUNDAMENTAL – 03 DE JUNHO 2025</b>", styles['Title'])
+	elements.append(title)
+	elements.append(Spacer(1, 18))
+
+	# Cabeçalho e dados exemplo
+	header = ['HORA', '7º A - M', '8º A - M', '9º A - M', '9º B - M']
+	horarios = [
+		['07:00–08:00', 'Matemática\nProf. João', 'Português\nProfª. Ana', 'História\nProf. Carlos', 'Geografia\nProfª. Luiza'],
+		['08:00–09:00', 'Português\nProfª. Ana', 'Matemática\nProf. João', 'Ciências\nProfª. Paula', 'Inglês\nProf. Marcos'],
+		['09:20–10:20', 'História\nProf. Carlos', 'Geografia\nProfª. Luiza', 'Matemática\nProf. João', 'Português\nProfª. Ana'],
+		['10:20–11:20', 'Geografia\nProfª. Luiza', 'História\nProf. Carlos', 'Inglês\nProf. Marcos', 'Ciências\nProfª. Paula'],
+		['11:20–12:20', 'Inglês\nProf. Marcos', 'Ciências\nProfª. Paula', 'Português\nProfª. Ana', 'Matemática\nProf. João'],
+		['12:20–13:20', 'Ciências\nProfª. Paula', 'Inglês\nProf. Marcos', 'Geografia\nProfª. Luiza', 'História\nProf. Carlos'],
+	]
+	dias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX']
+	data = [header]
+	for dia in dias:
+		for i, row in enumerate(horarios):
+			if i == 0:
+				data.append([dia] + row)
+			else:
+				data.append([''] + row)
+
+	table = Table(data, colWidths=[35, 90, 90, 90, 90])
+	table.setStyle(TableStyle([
+		('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#ffe5c2')),
+		('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#b85c00')),
+		('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+		('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+		('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+		('FONTSIZE', (0, 0), (-1, 0), 12),
+		('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+		('FONTSIZE', (0, 1), (-1, -1), 10),
+		('BACKGROUND', (0, 1), (0, -1), colors.HexColor('#ffe5c2')),
+		('TEXTCOLOR', (0, 1), (0, -1), colors.HexColor('#b85c00')),
+		('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
+		('FONTSIZE', (0, 1), (0, -1), 11),
+		('GRID', (0, 0), (-1, -1), 1.2, colors.HexColor('#e0c9a6')),
+		('BACKGROUND', (1, 1), (-1, -1), colors.HexColor('#fffdfa')),
+		('TEXTCOLOR', (1, 1), (-1, -1), colors.HexColor('#b85c00')),
+		('ROWHEIGHT', (0, 0), (-1, -1), 28),
+	]))
+	elements.append(table)
+	doc.build(elements)
+	pdf = buffer.getvalue()
+	buffer.close()
+	response.write(pdf)
+	return response
 # ...existing code...
 def exportar_horarios_ics(request):
 	from .models import Horario
@@ -76,6 +140,8 @@ import io
 import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -105,26 +171,50 @@ def exportar_horarios_excel(request):
     )
     response['Content-Disposition'] = 'attachment; filename=horarios.xlsx'
     return response
+
 def home(request):
-	return render(request, 'core/home.html')
+    # Estatísticas para o dashboard
+    total_turmas = Turma.objects.count()
+    total_professores = Professor.objects.count()
+    total_disciplinas = Disciplina.objects.count()
+    total_horarios = Horario.objects.count()
+    
+    # Horários por dia da semana
+    horarios_por_dia = {}
+    for dia in ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta']:
+        horarios_por_dia[dia] = Horario.objects.filter(dia_semana=dia).count()
+    
+    context = {
+        'total_turmas': total_turmas,
+        'total_professores': total_professores,
+        'total_disciplinas': total_disciplinas,
+        'total_horarios': total_horarios,
+        'horarios_por_dia': horarios_por_dia,
+    }
+    return render(request, 'core/home.html', context)
+@login_required
 def editar_turma(request, pk):
 	turma = Turma.objects.get(pk=pk)
 	if request.method == 'POST':
 		form = TurmaForm(request.POST, instance=turma)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Turma editada com sucesso!')
 			return redirect('lista_turmas')
 	else:
 		form = TurmaForm(instance=turma)
 	return render(request, 'core/editar_turma.html', {'form': form, 'turma': turma})
 
+@login_required
 def excluir_turma(request, pk):
 	turma = Turma.objects.get(pk=pk)
 	if request.method == 'POST':
 		turma.delete()
+		messages.success(request, 'Turma excluída com sucesso!')
 		return redirect('lista_turmas')
 	return render(request, 'core/excluir_turma.html', {'turma': turma})
 
+@login_required
 def editar_professor(request, pk):
 	professor = Professor.objects.get(pk=pk)
 	if request.method == 'POST':
@@ -143,6 +233,7 @@ def excluir_professor(request, pk):
 		return redirect('lista_professores')
 	return render(request, 'core/excluir_professor.html', {'professor': professor})
 
+@login_required
 def editar_disciplina(request, pk):
 	disciplina = Disciplina.objects.get(pk=pk)
 	if request.method == 'POST':
@@ -154,6 +245,7 @@ def editar_disciplina(request, pk):
 		form = DisciplinaForm(instance=disciplina)
 	return render(request, 'core/editar_disciplina.html', {'form': form, 'disciplina': disciplina})
 
+@login_required
 def excluir_disciplina(request, pk):
 	disciplina = Disciplina.objects.get(pk=pk)
 	if request.method == 'POST':
@@ -161,6 +253,7 @@ def excluir_disciplina(request, pk):
 		return redirect('lista_disciplinas')
 	return render(request, 'core/excluir_disciplina.html', {'disciplina': disciplina})
 
+@login_required
 def editar_horario(request, pk):
 	horario = Horario.objects.get(pk=pk)
 	if request.method == 'POST':
@@ -172,6 +265,7 @@ def editar_horario(request, pk):
 		form = HorarioForm(instance=horario)
 	return render(request, 'core/editar_horario.html', {'form': form, 'horario': horario})
 
+@login_required
 def excluir_horario(request, pk):
 	horario = Horario.objects.get(pk=pk)
 	if request.method == 'POST':
@@ -185,13 +279,15 @@ from .models import Turma, Professor, Disciplina, Horario
 class TurmaForm(forms.ModelForm):
 	class Meta:
 		model = Turma
-		fields = ['nome', 'ano']
+		fields = ['nome']
 
+@login_required
 def cadastrar_turma(request):
 	if request.method == 'POST':
 		form = TurmaForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Turma cadastrada com sucesso!')
 			return redirect('lista_turmas')
 	else:
 		form = TurmaForm()
@@ -200,13 +296,15 @@ def cadastrar_turma(request):
 class ProfessorForm(forms.ModelForm):
 	class Meta:
 		model = Professor
-		fields = ['nome', 'disciplina']
+		fields = ['nome']
 
+@login_required
 def cadastrar_professor(request):
 	if request.method == 'POST':
 		form = ProfessorForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Professor cadastrado com sucesso!')
 			return redirect('lista_professores')
 	else:
 		form = ProfessorForm()
@@ -217,11 +315,13 @@ class DisciplinaForm(forms.ModelForm):
 		model = Disciplina
 		fields = ['nome']
 
+@login_required
 def cadastrar_disciplina(request):
 	if request.method == 'POST':
 		form = DisciplinaForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Disciplina cadastrada com sucesso!')
 			return redirect('lista_disciplinas')
 	else:
 		form = DisciplinaForm()
@@ -280,11 +380,13 @@ class HorarioForm(forms.ModelForm):
 
 		return cleaned_data
 
+@login_required
 def cadastrar_horario(request):
 	if request.method == 'POST':
 		form = HorarioForm(request.POST)
 		if form.is_valid():
 			form.save()
+			messages.success(request, 'Horário cadastrado com sucesso!')
 			return redirect('lista_horarios')
 	else:
 		form = HorarioForm()
@@ -292,18 +394,55 @@ def cadastrar_horario(request):
 from django.shortcuts import render
 from .models import Turma, Professor, Disciplina, Horario
 
+@login_required
 def lista_turmas(request):
-	turmas = Turma.objects.all()
-	return render(request, 'core/lista_turmas.html', {'turmas': turmas})
+    query = request.GET.get('q', '')
+    turmas = Turma.objects.all().order_by('nome')
+    
+    if query:
+        turmas = turmas.filter(nome__icontains=query)
+    
+    paginator = Paginator(turmas, 10)  # 10 itens por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'core/lista_turmas.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
+@login_required
 def lista_professores(request):
-	professores = Professor.objects.all()
-	return render(request, 'core/lista_professores.html', {'professores': professores})
+    query = request.GET.get('q', '')
+    professores = Professor.objects.all().order_by('nome')
+    
+    if query:
+        professores = professores.filter(nome__icontains=query)
+    
+    paginator = Paginator(professores, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'core/lista_professores.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
+@login_required
 def lista_disciplinas(request):
-	disciplinas = Disciplina.objects.all()
-	return render(request, 'core/lista_disciplinas.html', {'disciplinas': disciplinas})
+    query = request.GET.get('q', '')
+    disciplinas = Disciplina.objects.all().order_by('nome')
+    
+    if query:
+        disciplinas = disciplinas.filter(nome__icontains=query)
+    
+    paginator = Paginator(disciplinas, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'core/lista_disciplinas.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
+@login_required
 def lista_horarios(request):
 	from .models import Horario, Turma, Professor, Disciplina
 	turmas = Turma.objects.all()
@@ -325,11 +464,18 @@ def lista_horarios(request):
 	if dia_semana:
 		horarios = horarios.filter(dia_semana__iexact=dia_semana)
 
+	horarios = horarios.order_by('dia_semana', 'horario_inicio')
+
 	# Obter todos os horários únicos cadastrados (hora de início)
 	horarios_unicos = sorted(set(h.horario_inicio.strftime('%H:%M') for h in horarios))
 	dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
+	
+	paginator = Paginator(horarios, 15)  # 15 horários por página
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+	
 	return render(request, 'core/lista_horarios.html', {
-		'horarios': horarios,
+		'page_obj': page_obj,
 		'horarios_unicos': horarios_unicos,
 		'dias_semana': dias_semana,
 		'turmas': turmas,
