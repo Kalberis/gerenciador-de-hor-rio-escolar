@@ -13,8 +13,6 @@ pandas==2.1.4
 
 # Excel Export
 xlsxwriter==3.1.9
-# Atualize o pip antes de instalar os pacotes (importante para Render)
---upgrade pip
 
 # Production Server
 gunicorn==21.2.0
