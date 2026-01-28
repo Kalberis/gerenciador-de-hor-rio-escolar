@@ -4,6 +4,7 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn horario_escolar.wsgi:application"
+    postDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: horario_escolar.settings
