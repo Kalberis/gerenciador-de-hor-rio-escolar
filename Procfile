@@ -1,0 +1,1 @@
+web: gunicorn horario_escolar.wsgi:application

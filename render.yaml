@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: horario-escolar
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn horario_escolar.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: horario_escolar.settings
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"

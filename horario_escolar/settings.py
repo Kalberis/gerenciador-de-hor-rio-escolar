@@ -68,22 +68,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'horario_escolar.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='horario_escolar'),
-        'USER': config('DB_USER', default='horario_user'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+if config('RENDER', default=False, cast=bool):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', default='5432'),
+        }
     }
-}
-
-# Fallback to SQLite for development if PostgreSQL is not available
-if not config('DB_PASSWORD', default=''):
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
