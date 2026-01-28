@@ -11,5 +11,3 @@ services:
         sync: false
       - key: DEBUG
         value: "False"
-      - key: ALLOWED_HOSTS
-        value: "*"
