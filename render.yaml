@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: horario-escolar
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    startCommand: "gunicorn horario_escolar.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: horario_escolar.settings_prod
+      # Adicione outras variáveis de ambiente necessárias aqui

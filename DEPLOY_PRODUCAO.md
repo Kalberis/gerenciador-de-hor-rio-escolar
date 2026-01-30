@@ -1,3 +1,33 @@
+# Deploy no Render.com
+
+1. Faça push do seu código para o GitHub.
+2. Crie um arquivo `Procfile` com:
+     ```
+     web: gunicorn horario_escolar.wsgi:application
+     ```
+3. Crie um arquivo `render.yaml` para automação (opcional, mas recomendado):
+     ```yaml
+     services:
+         - type: web
+             name: horario-escolar
+             env: python
+             buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+             startCommand: "gunicorn horario_escolar.wsgi:application"
+             envVars:
+                 - key: DJANGO_SETTINGS_MODULE
+                     value: horario_escolar.settings_prod
+                 # Adicione outras variáveis de ambiente necessárias aqui
+     ```
+4. No Render, crie um novo Web Service e conecte ao seu repositório.
+5. Configure as variáveis de ambiente necessárias (ex: `DJANGO_SECRET_KEY`, `DATABASE_URL`, etc).
+6. Certifique-se de que o domínio do Render está em `ALLOWED_HOSTS` no seu `settings_prod.py`.
+7. O Render irá rodar os comandos de build e start automaticamente.
+
+**Dicas:**
+- Use o WhiteNoise para servir arquivos estáticos em produção.
+- Ajuste o banco de dados para PostgreSQL, se necessário.
+
+Pronto! Seu projeto estará disponível no domínio fornecido pelo Render.
 # Gerenciador de Horário Escolar - Guia de Produção
 
 ## 📋 Pré-requisitos para Produção
