@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: horario-escolar-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: horario-escolar-redis
+  template:
+    metadata:
+      labels:
+        app: horario-escolar-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: horario-escolar-redis
+spec:
+  selector:
+    app: horario-escolar-redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
