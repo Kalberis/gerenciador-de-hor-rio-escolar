@@ -1,4 +1,3 @@
-
 # Core Django
 Django==5.0.4
 

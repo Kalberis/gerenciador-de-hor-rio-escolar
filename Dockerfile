@@ -25,14 +25,14 @@ RUN useradd --create-home --shell /bin/bash app \
     && mkdir -p /app \
     && chown -R app:app /app
 
-USER app
+
 WORKDIR /app
 
 # Copiar requirements e instalar dependências Python
 COPY --chown=app:app requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir gunicorn psycopg2-binary
+    && pip install --no-cache-dir gunicorn
 
 # Copiar código da aplicação
 COPY --chown=app:app . .
