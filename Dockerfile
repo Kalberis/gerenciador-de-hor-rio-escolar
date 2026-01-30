@@ -1,5 +1,10 @@
 # Gerenciador de Horário Escolar - Docker
+
 FROM python:3.11-slim
+
+# Descomente e configure as linhas abaixo se precisar de proxy para acesso à internet
+# ENV HTTP_PROXY=http://seu_proxy:porta
+# ENV HTTPS_PROXY=http://seu_proxy:porta
 
 # Definir variáveis de ambiente
 ENV PYTHONDONTWRITEBYTECODE=1
